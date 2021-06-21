@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<Domain.Identity.ApplicationUser> SignInManager
+@inject UserManager<Domain.Identity.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Import Users</h1>
+</div>
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("ADMINISTRATOR"))
+{
+<form asp-controller="Home" asp-action="ImportUsers" method="post" enctype="multipart/form-data">
+
+    <div class="form-group w-25">
+        <input type="file" name="file" class="form-control" />
+    </div>
+
+    <hr />
+
+    <button type="submit" class="btn btn-outline-success">Import Excel</button>
+
+</form>
+}

@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Domain.DomainModels.Ticket>
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<Domain.Identity.ApplicationUser> SignInManager
+@inject UserManager<Domain.Identity.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Available Tickets</h1>
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("ADMINISTRATOR"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+@if (SignInManager.IsSignedIn(User))
+{
+    <p>
+        <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-success">Shopping Cart</a>
+    </p>
+}
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("ADMINISTRATOR"))
+{
+    <p>
+        <a asp-controller="Tickets" asp-action="ExportTickets" class="btn btn-outline-danger">Export Tickets</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Seat)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Availability)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieProjection.Hall)
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieProjection.Movie.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieProjection.DateTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Seat)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Availability)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MovieProjection.Hall)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MovieProjection.Movie.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MovieProjection.DateTime)
+                </td>
+                <td>
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("ADMINISTRATOR"))
+                    {
+
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+
+                    }|
+
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("ADMINISTRATOR"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }|
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <form asp-action="AddTicketToCart" asp-route-id="@item.Id">
+                            <div class="form-group">
+                                <input type="submit" value="Add To Cart" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
